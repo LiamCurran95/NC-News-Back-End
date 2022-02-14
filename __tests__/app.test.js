@@ -11,13 +11,13 @@ afterAll(() => {
 
 describe("/api/topics", () => {
 	describe("GET", () => {
-		test("Status 200 - Body contains an object containing an array of topics", () => {
+		test("Status 200 - Body contains an object containing an array of topics when test dataset used", () => {
 			return request(app)
 				.get("/api/topics")
 				.expect(200)
 				.then((res) => {
-					console.log(res.body);
 					res.body.topics.forEach((topic) => {
+						expect(res.body.topics).toHaveLength(3);
 						expect(topic).toMatchObject({
 							slug: expect.any(String),
 							description: expect.any(String),
