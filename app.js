@@ -17,7 +17,7 @@ app.all("/*", (req, res) => {
 });
 
 app.use(errors.PsqlErrorHandler);
-app.use(errors.handleCustomErrors);
+app.use(errors.customErrorHandler);
 app.use(errors.error500Handler);
 
 module.exports = app;

@@ -6,7 +6,7 @@ exports.PsqlErrorHandler = (err, req, res, next) => {
 	}
 };
 
-exports.handleCustomErrors = (err, req, res, next) => {
+exports.customErrorHandler = (err, req, res, next) => {
 	const { status, msg } = err;
 	if (status) {
 		res.status(status).send({ msg });
