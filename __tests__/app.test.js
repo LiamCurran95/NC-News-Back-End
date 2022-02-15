@@ -16,6 +16,7 @@ describe("/api/topics", () => {
 				.get("/api/topics")
 				.expect(200)
 				.then((res) => {
+					expect(res.body.topics).toHaveLength(3);
 					res.body.topics.forEach((topic) => {
 						expect(topic).toMatchObject({
 							slug: expect.any(String),
