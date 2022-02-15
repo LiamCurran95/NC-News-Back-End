@@ -1,6 +1,9 @@
-exports.PsqlErrorHandler = (err, req, res, next) => {
+exports.psqlErrorHandler = (err, req, res, next) => {
+	console.log(err);
 	if (err.code === "22P02") {
-		res.status(400).send({ msg: "Invalid ID used for GET request." });
+		res
+			.status(400)
+			.send({ msg: "PSQL Error Code PP202: Invalid text representation" });
 	} else {
 		next(err);
 	}
@@ -16,6 +19,5 @@ exports.customErrorHandler = (err, req, res, next) => {
 };
 
 exports.error500Handler = (err, req, res, next) => {
-	console.log(err);
 	res.status(500).send({ msg: "There is an error on the server" });
 };
