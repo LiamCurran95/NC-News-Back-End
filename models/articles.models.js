@@ -15,6 +15,19 @@ exports.checkArticleExists = (id) => {
 		});
 };
 
+exports.fetchArticles = () => {
+	return db
+		.query(
+			`SELECT username, title, article_id, body, topic, created_at, votes 
+    FROM articles
+    JOIN users
+    ON users.username = articles.author;`
+		)
+		.then(({ rows }) => {
+			return rows;
+		});
+};
+
 exports.fetchArticlesById = (id) => {
 	return db
 		.query(
