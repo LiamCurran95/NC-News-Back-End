@@ -7,7 +7,22 @@ exports.checkArticleExists = (id) => {
 			if (rows.length === 0) {
 				return Promise.reject({
 					status: 404,
-					msg: "Valid ID format, article does not exist",
+					msg: "Valid ID format, this article does not exist.",
+				});
+			} else {
+				return rows[0];
+			}
+		});
+};
+
+exports.checkCommentsExist = (id) => {
+	return db
+		.query(`SELECT * FROM comments WHERE article_id = $1;`, [id])
+		.then(({ rows }) => {
+			if (rows.length === 0) {
+				return Promise.reject({
+					status: 404,
+					msg: "Valid ID format, this article has no comments.",
 				});
 			} else {
 				return rows[0];
@@ -32,15 +47,18 @@ exports.fetchArticles = () => {
 exports.fetchArticlesById = (id) => {
 	return db
 		.query(
-			`SELECT username, title, article_id, body, topic, created_at, votes 
-    FROM articles
-    JOIN users
-    ON users.username = articles.author
-    WHERE article_id = $1;`,
+			`SELECT 
+			COUNT(comment_id)
+			AS comment_count, articles.author, title, articles.article_id, articles.body, topic, articles.created_at, articles.votes
+			FROM articles
+			JOIN comments
+			ON comments.article_id = articles.article_id
+			WHERE articles.article_id = $1
+			GROUP BY articles.article_id;`,
 			[id]
 		)
-		.then(({ rows }) => {
-			return rows;
+		.then(({ rows: [article] }) => {
+			return article;
 		});
 };
 

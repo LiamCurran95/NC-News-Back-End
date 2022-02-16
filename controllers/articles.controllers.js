@@ -3,6 +3,7 @@ const {
 	checkArticleExists,
 	fetchArticles,
 	updateArticleById,
+	checkCommentsExist,
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
@@ -15,7 +16,11 @@ exports.getArticles = (req, res, next) => {
 
 exports.getArticlesById = (req, res, next) => {
 	const { article_id } = req.params;
-	Promise.all([fetchArticlesById(article_id), checkArticleExists(article_id)])
+	Promise.all([
+		fetchArticlesById(article_id),
+		checkArticleExists(article_id),
+		checkCommentsExist(article_id),
+	])
 		.then(([article]) => {
 			res.status(200).send({ article });
 		})
