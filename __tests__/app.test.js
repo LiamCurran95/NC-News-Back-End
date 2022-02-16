@@ -31,13 +31,13 @@ describe("/api/topics", () => {
 				.get("/api/topic")
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
 });
 
-describe("/api/articles/:article_id", () => {
+describe("/api/articles", () => {
 	describe("GET :article_id", () => {
 		test("Status 200 - Body contains an object with the relevant article", () => {
 			const article_id = 1;
@@ -61,7 +61,7 @@ describe("/api/articles/:article_id", () => {
 				.get(`/api/articles/notAnId`)
 				.expect(400)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Invalid ID used for GET request.");
+					expect(msg).toBe("Bad request.");
 				});
 		});
 		test("Status 404 - Valid ID - Doesn't exist within database.", () => {
@@ -72,12 +72,54 @@ describe("/api/articles/:article_id", () => {
 					expect(msg).toBe("Valid ID format, article does not exist");
 				});
 		});
-		test("Status 404 - Path not found.", () => {
+		test("Status 404 - Invalid ID - path not found", () => {
 			return request(app)
 				.get("/api/articl/123")
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
+				});
+		});
+	});
+	describe("PATCH /api/articles/:article_id", () => {
+		test("Status 200 - Return body contains article object with updated vote count ", () => {
+			const body = { inc_votes: 10 };
+			return request(app)
+				.patch("/api/articles/1")
+				.send(body)
+				.expect(200)
+				.then(({ body: { article } }) => {
+					expect(article.votes).toBe(110);
+				});
+		});
+		test("Status 400 - Invalid body used for patch", () => {
+			const body = { inc_votes: "WORD" };
+			return request(app)
+				.patch("/api/articles/1")
+				.send(body)
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Bad request.");
+				});
+		});
+		test("Status 400 - Invalid ID format", () => {
+			const body = { inc_votes: 10 };
+			return request(app)
+				.patch("/api/articles/notValid")
+				.send(body)
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Bad request.");
+				});
+		});
+		test("Status 404 - Invalid ID - path not found", () => {
+			const body = { inc_votes: 10 };
+			return request(app)
+				.patch("/api/articles/1234")
+				.send(body)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
@@ -103,7 +145,7 @@ describe("/api/users", () => {
 				.get("/api/topic")
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
