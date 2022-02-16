@@ -36,16 +36,25 @@ describe("/api/topics", () => {
 	});
 });
 
-describe("api/articles endpoint", () => {
+describe("/api/articles endpoint", () => {
 	describe("/api/articles", () => {
 		describe("GET /api/articles", () => {
 			test("Status 200 - Body contains an object containing an array of topics", () => {
 				return request(app)
 					.get("/api/articles")
 					.expect(200)
-					.then((res) => {
-						res.body.articles.forEach((article) => {
-							expect(res.body.articles).toHaveLength(12);
+					.then(({ body }) => {
+						expect(body.articles[0]["created_at"]).toBe(
+							"2020-11-03T09:12:00.000Z"
+						);
+						expect(body.articles[1]["created_at"]).toBe(
+							"2020-10-18T01:00:00.000Z"
+						);
+						expect(body.articles[11]["created_at"]).toBe(
+							"2020-01-07T14:08:00.000Z"
+						);
+						expect(body.articles).toHaveLength(12);
+						body.articles.forEach((article) => {
 							expect(article).toMatchObject({
 								title: expect.any(String),
 								article_id: expect.any(Number),

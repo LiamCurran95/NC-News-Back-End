@@ -21,7 +21,8 @@ exports.fetchArticles = () => {
 			`SELECT username, title, article_id, body, topic, created_at, votes 
     FROM articles
     JOIN users
-    ON users.username = articles.author;`
+    ON users.username = articles.author
+	ORDER BY created_at DESC;`
 		)
 		.then(({ rows }) => {
 			return rows;
