@@ -124,3 +124,29 @@ describe("/api/articles", () => {
 		});
 	});
 });
+
+describe("/api/users", () => {
+	describe("GET users", () => {
+		test("Status 200 - Body contains an object containing an array of users", () => {
+			return request(app)
+				.get("/api/users")
+				.expect(200)
+				.then((res) => {
+					expect(res.body.users).toHaveLength(4);
+					res.body.users.forEach((users) => {
+						expect(users).toMatchObject({
+							username: expect.any(String),
+						});
+					});
+				});
+		});
+		test("Status 404 - Path not found", () => {
+			return request(app)
+				.get("/api/topic")
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Path not found within the server.");
+				});
+		});
+	});
+});
