@@ -145,7 +145,7 @@ describe("/api/users", () => {
 				.get("/api/topic")
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});

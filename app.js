@@ -2,8 +2,8 @@ const express = require("express");
 const {
 	getArticlesById,
 	patchArticle,
-} = require("./controllers/articles-controllers");
-const { getTopics } = require("./controllers/news-controllers");
+} = require("./controllers/articles.controllers");
+const { getTopics } = require("./controllers/news.controllers");
 const errors = require("./controllers/errors");
 const { getUsers } = require("./controllers/users.controllers");
 

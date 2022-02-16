@@ -2,7 +2,7 @@ const {
 	fetchArticlesById,
 	checkArticleExists,
 	updateArticleById,
-} = require("../models/articles-models");
+} = require("../models/articles.models");
 
 exports.getArticlesById = (req, res, next) => {
 	const { article_id } = req.params;
