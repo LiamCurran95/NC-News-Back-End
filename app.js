@@ -17,7 +17,7 @@ app.get("/api/articles/:article_id", getArticlesById);
 app.patch("/api/articles/:article_id", patchArticle);
 
 app.all("/*", (req, res) => {
-	res.status(404).send({ msg: "Path not found within the server." });
+	res.status(404).send({ msg: "Path not found." });
 });
 
 app.use(errors.psqlErrorHandler);

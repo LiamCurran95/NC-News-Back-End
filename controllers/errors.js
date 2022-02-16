@@ -1,9 +1,6 @@
 exports.psqlErrorHandler = (err, req, res, next) => {
-	console.log(err);
 	if (err.code === "22P02") {
-		res
-			.status(400)
-			.send({ msg: "PSQL Error Code PP202: Invalid text representation" });
+		res.status(400).send({ msg: "Bad request." });
 	} else {
 		next(err);
 	}

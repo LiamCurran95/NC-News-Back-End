@@ -26,7 +26,6 @@ exports.fetchArticlesById = (id) => {
 			[id]
 		)
 		.then(({ rows }) => {
-			console.log(rows);
 			return rows;
 		});
 };
@@ -41,7 +40,7 @@ exports.updateArticleById = ({ inc_votes }, article_id) => {
 			if (rows.length === 0)
 				return Promise.reject({
 					status: 404,
-					msg: "Path not found within the server.",
+					msg: "Path not found.",
 				});
 			return rows[0];
 		});

@@ -31,7 +31,7 @@ describe("/api/topics", () => {
 				.get("/api/topic")
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
@@ -61,10 +61,7 @@ describe("/api/articles", () => {
 				.get(`/api/articles/notAnId`)
 				.expect(400)
 				.then(({ body: { msg } }) => {
-					console.log(msg);
-					expect(msg).toBe(
-						"PSQL Error Code PP202: Invalid text representation"
-					);
+					expect(msg).toBe("Bad request.");
 				});
 		});
 		test("Status 404 - Valid ID - Doesn't exist within database.", () => {
@@ -72,7 +69,6 @@ describe("/api/articles", () => {
 				.get(`/api/articles/234`)
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					console.log(msg);
 					expect(msg).toBe("Valid ID format, article does not exist");
 				});
 		});
@@ -81,7 +77,7 @@ describe("/api/articles", () => {
 				.get("/api/articl/123")
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
@@ -103,9 +99,7 @@ describe("/api/articles", () => {
 				.send(body)
 				.expect(400)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe(
-						"PSQL Error Code PP202: Invalid text representation"
-					);
+					expect(msg).toBe("Bad request.");
 				});
 		});
 		test("Status 400 - Invalid ID format", () => {
@@ -115,9 +109,7 @@ describe("/api/articles", () => {
 				.send(body)
 				.expect(400)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe(
-						"PSQL Error Code PP202: Invalid text representation"
-					);
+					expect(msg).toBe("Bad request.");
 				});
 		});
 		test("Status 404 - Invalid ID - path not found", () => {
@@ -127,7 +119,7 @@ describe("/api/articles", () => {
 				.send(body)
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Path not found within the server.");
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
