@@ -61,7 +61,6 @@ describe("/api/articles/:article_id", () => {
 				.get(`/api/articles/notAnId`)
 				.expect(400)
 				.then(({ body: { msg } }) => {
-					console.log(msg);
 					expect(msg).toBe("Invalid ID used for GET request.");
 				});
 		});
@@ -70,13 +69,38 @@ describe("/api/articles/:article_id", () => {
 				.get(`/api/articles/234`)
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					console.log(msg);
 					expect(msg).toBe("Valid ID format, article does not exist");
 				});
 		});
 		test("Status 404 - Path not found.", () => {
 			return request(app)
 				.get("/api/articl/123")
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Path not found within the server.");
+				});
+		});
+	});
+});
+
+describe("/api/users", () => {
+	describe("GET users", () => {
+		test("Status 200 - Body contains an object containing an array of users", () => {
+			return request(app)
+				.get("/api/users")
+				.expect(200)
+				.then((res) => {
+					expect(res.body.users).toHaveLength(4);
+					res.body.users.forEach((users) => {
+						expect(users).toMatchObject({
+							username: expect.any(String),
+						});
+					});
+				});
+		});
+		test("Status 404 - Path not found", () => {
+			return request(app)
+				.get("/api/topic")
 				.expect(404)
 				.then(({ body: { msg } }) => {
 					expect(msg).toBe("Path not found within the server.");
