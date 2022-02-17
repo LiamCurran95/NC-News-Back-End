@@ -38,7 +38,7 @@ describe("/api/topics endpoint", () => {
 
 describe("/api/articles endpoint", () => {
 	describe("GET /api/articles", () => {
-		test("Status 200 - Body contains an object containing an array of topics", () => {
+		test("Status 200 - Body contains an object containing an array of topics (and includes comment count)", () => {
 			return request(app)
 				.get("/api/articles")
 				.expect(200)
