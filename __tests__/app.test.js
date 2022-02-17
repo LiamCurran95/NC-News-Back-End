@@ -43,24 +43,19 @@ describe("/api/articles endpoint", () => {
 				.get("/api/articles")
 				.expect(200)
 				.then(({ body }) => {
-					expect(body.articles[0]["created_at"]).toBe(
-						"2020-11-03T09:12:00.000Z"
-					);
-					expect(body.articles[1]["created_at"]).toBe(
-						"2020-10-18T01:00:00.000Z"
-					);
-					expect(body.articles[11]["created_at"]).toBe(
-						"2020-01-07T14:08:00.000Z"
-					);
-					expect(body.articles).toHaveLength(12);
-					body.articles.forEach((article) => {
+					expect(body[0]["created_at"]).toBe("2020-11-03T09:12:00.000Z");
+					expect(body[1]["created_at"]).toBe("2020-10-18T01:00:00.000Z");
+					expect(body[11]["created_at"]).toBe("2020-01-07T14:08:00.000Z");
+					expect(body).toHaveLength(12);
+					body.forEach((article) => {
 						expect(article).toMatchObject({
+							comment_count: expect.any(String),
 							title: expect.any(String),
 							article_id: expect.any(Number),
 							topic: expect.any(String),
 							created_at: expect.any(String),
 							votes: expect.any(Number),
-							username: expect.any(String),
+							author: expect.any(String),
 						});
 					});
 				});
