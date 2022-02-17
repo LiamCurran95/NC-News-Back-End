@@ -4,6 +4,7 @@ const {
 	fetchArticles,
 	updateArticleById,
 	checkCommentsExist,
+	fetchArticleCommentsById,
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
@@ -23,6 +24,26 @@ exports.getArticlesById = (req, res, next) => {
 	])
 		.then(([article]) => {
 			res.status(200).send({ article });
+		})
+		.catch((err) => {
+			next(err);
+		});
+};
+
+exports.getArticleCommentsById = (req, res, next) => {
+	const { article_id } = req.params;
+	Promise.all([
+		fetchArticleCommentsById(article_id),
+		checkArticleExists(article_id),
+		checkCommentsExist(article_id),
+	])
+		// .then(([resolvedarray]) => {
+		// 	console.log(resolvedarray);
+		// })
+		//ARRAY DESTRUCTURE GIVES YOU FIRST INDEX I.E. FETCHARTICLECOMMENTSBYID
+		.then(([comments]) => {
+			// console.log(comments);
+			res.status(200).send(comments);
 		})
 		.catch((err) => {
 			next(err);
