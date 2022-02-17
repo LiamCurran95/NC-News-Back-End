@@ -124,7 +124,7 @@ describe("/api/articles endpoint", () => {
 				.get(`/api/articles/${article_id}`)
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Valid ID format, this article has no comments.");
+					expect(msg).toBe("This article has no comments.");
 				});
 		});
 	});
@@ -170,6 +170,24 @@ describe("/api/articles endpoint", () => {
 							created_at: "2020-03-14T17:02:00.000Z",
 						},
 					]);
+				});
+		});
+		test("Status 200 - Valid ID - Article has no comments (comment_count)", () => {
+			const article_id = 2;
+			return request(app)
+				.get(`/api/articles/${article_id}/comments`)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("This article has no comments.");
+				});
+		});
+		test("Status 404 - Invalid ID - path not found", () => {
+			const article_id = 9;
+			return request(app)
+				.get(`/api/articles/${article_id}/comment`)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Path not found.");
 				});
 		});
 	});
