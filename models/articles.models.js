@@ -22,7 +22,7 @@ exports.checkCommentsExist = (id) => {
 			if (rows.length === 0) {
 				return Promise.reject({
 					status: 404,
-					msg: "Valid ID format, this article has no comments.",
+					msg: "This article has no comments.",
 				});
 			} else {
 				return rows[0];
@@ -62,7 +62,7 @@ exports.fetchArticlesById = (id) => {
 		});
 };
 
-exports.fetchArticleCommentsById = (id) => {
+exports.fetchCommentsByArticleId = (id) => {
 	return db
 		.query(
 			`SELECT comment_id, votes, created_at, author, body, article_id
