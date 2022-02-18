@@ -1,20 +1,5 @@
 const db = require("../db/connection");
 
-// exports.checkArticleExists = (id) => {
-// 	return db
-// 		.query(`SELECT * FROM articles WHERE article_id = $1;`, [+id])
-// 		.then(({ rows }) => {
-// 			if (rows.length === 0) {
-// 				return Promise.reject({
-// 					status: 404,
-// 					msg: "Path not found.",
-// 				});
-// 			} else {
-// 				return rows[0];
-// 			}
-// 		});
-// };
-
 exports.fetchArticles = () => {
 	return db
 		.query(
@@ -51,6 +36,19 @@ exports.fetchArticlesById = (id) => {
 			} else {
 				return rows;
 			}
+		});
+};
+
+exports.fetchCommentsByArticleId = (id) => {
+	return db
+		.query(
+			`SELECT comment_id, votes, created_at, author, body, article_id
+		FROM comments
+		WHERE article_id = $1;`,
+			[id]
+		)
+		.then(({ rows }) => {
+			return rows;
 		});
 };
 

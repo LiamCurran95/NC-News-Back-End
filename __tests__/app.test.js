@@ -129,6 +129,80 @@ describe("/api/articles endpoint", () => {
 					expect(msg).toBe("Path not found.");
 				});
 		});
+
+		test("Status 404 - Valid ID - Article has no comments (comment_count)", () => {
+			const article_id = 2;
+			return request(app)
+				.get(`/api/articles/${article_id}`)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("This article has no comments.");
+				});
+		});
+	});
+
+	describe("GET /api/articles/:article_id/comments", () => {
+		test("Status 200 - Return body contains an array of comments with respective properties, for an article with a single comment", () => {
+			const article_id = 6;
+			return request(app)
+				.get(`/api/articles/${article_id}/comments`)
+				.then(({ body }) => {
+					expect(body).toEqual([
+						{
+							comment_id: 16,
+							votes: 1,
+							created_at: "2020-10-11T15:23:00.000Z",
+							author: "butter_bridge",
+							body: "This is a bad article name",
+							article_id: 6,
+						},
+					]);
+				});
+		});
+		test("Status 200 - Return body contains an array of comments with respective properties, for an article with a multiple comments", () => {
+			const article_id = 9;
+			return request(app)
+				.get(`/api/articles/${article_id}/comments`)
+				.then(({ body }) => {
+					expect(body).toEqual([
+						{
+							comment_id: 1,
+							votes: 16,
+							created_at: "2020-04-06T12:17:00.000Z",
+							author: "butter_bridge",
+							body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+							article_id: 9,
+						},
+						{
+							comment_id: 17,
+							body: "The owls are not what they seem.",
+							votes: 20,
+							author: "icellusedkars",
+							article_id: 9,
+							created_at: "2020-03-14T17:02:00.000Z",
+						},
+					]);
+				});
+		});
+		test("Status 200 - Valid ID - Article has no comments (comment_count)", () => {
+			const article_id = 2;
+			return request(app)
+				.get(`/api/articles/${article_id}/comments`)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("This article has no comments.");
+				});
+		});
+		test("Status 404 - Invalid ID - path not found", () => {
+			const article_id = 9;
+			return request(app)
+				.get(`/api/articles/${article_id}/comment`)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Path not found.");
+				});
+		});
+
 	});
 
 	describe("PATCH /api/articles/:article_id", () => {
