@@ -42,26 +42,41 @@ describe("/api/articles endpoint", () => {
 			return request(app)
 				.get("/api/articles")
 				.expect(200)
-				.then(({ body }) => {
-					expect(body.articles[0]["created_at"]).toBe(
-						"2020-11-03T09:12:00.000Z"
-					);
-					expect(body.articles[1]["created_at"]).toBe(
-						"2020-10-18T01:00:00.000Z"
-					);
-					expect(body.articles[11]["created_at"]).toBe(
-						"2020-01-07T14:08:00.000Z"
-					);
-					expect(body.articles).toHaveLength(12);
-					body.articles.forEach((article) => {
-						expect(article).toMatchObject({
-							title: expect.any(String),
-							article_id: expect.any(Number),
-							topic: expect.any(String),
-							created_at: expect.any(String),
-							votes: expect.any(Number),
-							username: expect.any(String),
-						});
+				.then(({ body: { articles } }) => {
+					expect(articles).toHaveLength(12);
+					articles.forEach((article) => {
+						expect(article).toEqual(
+							expect.objectContaining({
+								title: expect.any(String),
+								article_id: expect.any(Number),
+								topic: expect.any(String),
+								created_at: expect.any(String),
+								votes: expect.any(Number),
+								author: expect.any(String),
+							})
+						);
+					});
+				});
+		});
+		test("Status 200 - Articles are sorted by date DESC", () => {
+			return request(app)
+				.get("/api/articles")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					expect(articles).toBeSortedBy("created_at", { descending: true });
+				});
+		});
+		test("Status 200 - Additional functionality: comment_count", () => {
+			return request(app)
+				.get("/api/articles")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					articles.forEach((article) => {
+						expect(article).toEqual(
+							expect.objectContaining({
+								comment_count: expect.any(String),
+							})
+						);
 					});
 				});
 		});
@@ -74,8 +89,10 @@ describe("/api/articles endpoint", () => {
 				});
 		});
 	});
+});
 
-	describe("GET /api/:article_id", () => {
+describe("/api/:article_id", () => {
+	describe("GET /api/articles:article_id", () => {
 		test("Status 200 - Body contains an object with the relevant article", () => {
 			const article_id = 1;
 			return request(app)
@@ -131,23 +148,24 @@ describe("/api/articles endpoint", () => {
 				});
 		});
 	});
-
 	describe("GET /api/articles/:article_id/comments", () => {
 		test("Status 200 - Return body contains an array of comments with respective properties, for an article with a single comment", () => {
 			const article_id = 6;
 			return request(app)
 				.get(`/api/articles/${article_id}/comments`)
 				.then(({ body }) => {
-					expect(body).toEqual([
-						{
-							comment_id: 16,
-							votes: 1,
-							created_at: "2020-10-11T15:23:00.000Z",
-							author: "butter_bridge",
-							body: "This is a bad article name",
-							article_id: 6,
-						},
-					]);
+					expect(body).toEqual({
+						article_comments: [
+							{
+								comment_id: 16,
+								votes: 1,
+								created_at: "2020-10-11T15:23:00.000Z",
+								author: "butter_bridge",
+								body: "This is a bad article name",
+								article_id: 6,
+							},
+						],
+					});
 				});
 		});
 		test("Status 200 - Return body contains an array of comments with respective properties, for an article with a multiple comments", () => {
@@ -155,24 +173,35 @@ describe("/api/articles endpoint", () => {
 			return request(app)
 				.get(`/api/articles/${article_id}/comments`)
 				.then(({ body }) => {
-					expect(body).toEqual([
-						{
-							comment_id: 1,
-							votes: 16,
-							created_at: "2020-04-06T12:17:00.000Z",
-							author: "butter_bridge",
-							body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-							article_id: 9,
-						},
-						{
-							comment_id: 17,
-							body: "The owls are not what they seem.",
-							votes: 20,
-							author: "icellusedkars",
-							article_id: 9,
-							created_at: "2020-03-14T17:02:00.000Z",
-						},
-					]);
+					expect(body).toEqual({
+						article_comments: [
+							{
+								comment_id: 1,
+								votes: 16,
+								created_at: "2020-04-06T12:17:00.000Z",
+								author: "butter_bridge",
+								body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+								article_id: 9,
+							},
+							{
+								comment_id: 17,
+								body: "The owls are not what they seem.",
+								votes: 20,
+								author: "icellusedkars",
+								article_id: 9,
+								created_at: "2020-03-14T17:02:00.000Z",
+							},
+						],
+					});
+				});
+		});
+		test("Status 200 - Valid ID - Article has no comments (comment_count)", () => {
+			const article_id = 2;
+			return request(app)
+				.get(`/api/articles/${article_id}/comments`)
+				.expect(200)
+				.then(({ body }) => {
+					expect(body).toEqual({ article_comments: [] });
 				});
 		});
 		test("Status 404 - Invalid ID - path not found", () => {
@@ -185,7 +214,6 @@ describe("/api/articles endpoint", () => {
 				});
 		});
 	});
-
 	describe("PATCH /api/articles/:article_id", () => {
 		test("Status 200 - Return body contains article object with updated vote count ", () => {
 			const body = { inc_votes: 10 };

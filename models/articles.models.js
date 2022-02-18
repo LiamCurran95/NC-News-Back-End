@@ -3,11 +3,12 @@ const db = require("../db/connection");
 exports.fetchArticles = () => {
 	return db
 		.query(
-			`SELECT username, title, article_id, body, topic, created_at, votes 
-    FROM articles
-    JOIN users
-    ON users.username = articles.author
-	ORDER BY created_at DESC;`
+			`SELECT COUNT (comment_id) AS comment_count, articles.author, title, articles.article_id, articles.body, topic, articles.created_at, articles.votes
+    		FROM articles
+			LEFT JOIN comments
+			ON comments.article_id = articles.article_id
+			GROUP BY articles.article_id 
+			ORDER BY created_at DESC;`
 		)
 		.then(({ rows }) => {
 			return rows;
@@ -48,7 +49,7 @@ exports.fetchCommentsByArticleId = (id) => {
 			[id]
 		)
 		.then(({ rows }) => {
-			return rows;
+			return { article_comments: rows };
 		});
 };
 
