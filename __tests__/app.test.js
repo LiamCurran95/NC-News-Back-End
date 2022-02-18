@@ -81,16 +81,28 @@ describe("/api/articles endpoint", () => {
 			return request(app)
 				.get(`/api/articles/${article_id}`)
 				.expect(200)
-				.then(({ body: { article } }) => {
-					expect(article[0]).toMatchObject({
-						article_id: expect.any(Number),
-						title: expect.any(String),
-						topic: expect.any(String),
-						body: expect.any(String),
-						created_at: expect.any(String),
-						votes: expect.any(Number),
-						username: expect.any(String),
+				.then(({ body }) => {
+					expect(body).toEqual({
+						article: {
+							comment_count: "11",
+							author: "butter_bridge",
+							title: "Living in the shadow of a great man",
+							article_id: 1,
+							body: "I find this existence challenging",
+							topic: "mitch",
+							created_at: "2020-07-09T20:11:00.000Z",
+							votes: 100,
+						},
 					});
+				});
+		});
+		test("Status 200 - Valid ID - Article has no comments ", () => {
+			const article_id = 2;
+			return request(app)
+				.get(`/api/articles/${article_id}`)
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.article.comment_count).toBe("0");
 				});
 		});
 		test("Status 400 - Invalid ID", () => {
@@ -101,12 +113,12 @@ describe("/api/articles endpoint", () => {
 					expect(msg).toBe("Bad request.");
 				});
 		});
-		test("Status 404 - Valid ID - Doesn't exist within database.", () => {
+		test("Status 404 - Valid ID - Article doesn't exist within database.", () => {
 			return request(app)
 				.get(`/api/articles/234`)
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Valid ID format, article does not exist");
+					expect(msg).toBe("This article_id does not exist.");
 				});
 		});
 		test("Status 404 - Invalid ID - path not found", () => {
