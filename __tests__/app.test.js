@@ -38,25 +38,45 @@ describe("/api/topics endpoint", () => {
 
 describe("/api/articles endpoint", () => {
 	describe("GET /api/articles", () => {
-		test("Status 200 - Body contains an object containing an array of topics (and includes comment count)", () => {
+		test("Status 200 - Body contains an object containing an array of topics", () => {
 			return request(app)
 				.get("/api/articles")
 				.expect(200)
-				.then(({ body }) => {
-					expect(body[0]["created_at"]).toBe("2020-11-03T09:12:00.000Z");
-					expect(body[1]["created_at"]).toBe("2020-10-18T01:00:00.000Z");
-					expect(body[11]["created_at"]).toBe("2020-01-07T14:08:00.000Z");
-					expect(body).toHaveLength(12);
-					body.forEach((article) => {
-						expect(article).toMatchObject({
-							comment_count: expect.any(String),
-							title: expect.any(String),
-							article_id: expect.any(Number),
-							topic: expect.any(String),
-							created_at: expect.any(String),
-							votes: expect.any(Number),
-							author: expect.any(String),
-						});
+				.then(({ body: { articles } }) => {
+					expect(articles).toHaveLength(12);
+					articles.forEach((article) => {
+						expect(article).toEqual(
+							expect.objectContaining({
+								title: expect.any(String),
+								article_id: expect.any(Number),
+								topic: expect.any(String),
+								created_at: expect.any(String),
+								votes: expect.any(Number),
+								author: expect.any(String),
+							})
+						);
+					});
+				});
+		});
+		test("Status 200 - Articles are sorted by date DESC", () => {
+			return request(app)
+				.get("/api/articles")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					expect(articles).toBeSortedBy("created_at", { descending: true });
+				});
+		});
+		test("Status 200 - Additional functionality: comment_count", () => {
+			return request(app)
+				.get("/api/articles")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					articles.forEach((article) => {
+						expect(article).toEqual(
+							expect.objectContaining({
+								comment_count: expect.any(String),
+							})
+						);
 					});
 				});
 		});
@@ -111,15 +131,6 @@ describe("/api/articles endpoint", () => {
 				.expect(404)
 				.then(({ body: { msg } }) => {
 					expect(msg).toBe("Path not found.");
-				});
-		});
-		test("Status 404 - Valid ID - Article has no comments (comment_count)", () => {
-			const article_id = 2;
-			return request(app)
-				.get(`/api/articles/${article_id}`)
-				.expect(404)
-				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Valid ID format, this article has no comments.");
 				});
 		});
 	});
