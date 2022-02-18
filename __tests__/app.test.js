@@ -81,17 +81,28 @@ describe("/api/articles endpoint", () => {
 			return request(app)
 				.get(`/api/articles/${article_id}`)
 				.expect(200)
-				.then(({ body: { article } }) => {
-					expect(article).toMatchObject({
-						comment_count: expect.any(String),
-						author: expect.any(String),
-						title: expect.any(String),
-						article_id: expect.any(Number),
-						body: expect.any(String),
-						topic: expect.any(String),
-						created_at: expect.any(String),
-						votes: expect.any(Number),
+				.then(({ body }) => {
+					expect(body).toEqual({
+						article: {
+							comment_count: "11",
+							author: "butter_bridge",
+							title: "Living in the shadow of a great man",
+							article_id: 1,
+							body: "I find this existence challenging",
+							topic: "mitch",
+							created_at: "2020-07-09T20:11:00.000Z",
+							votes: 100,
+						},
 					});
+				});
+		});
+		test("Status 200 - Valid ID - Article has no comments ", () => {
+			const article_id = 2;
+			return request(app)
+				.get(`/api/articles/${article_id}`)
+				.expect(200)
+				.then(({ body }) => {
+					expect(body.article.comment_count).toBe("0");
 				});
 		});
 		test("Status 400 - Invalid ID", () => {
@@ -107,7 +118,7 @@ describe("/api/articles endpoint", () => {
 				.get(`/api/articles/234`)
 				.expect(404)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Valid ID format, this article does not exist.");
+					expect(msg).toBe("This article_id does not exist.");
 				});
 		});
 		test("Status 404 - Invalid ID - path not found", () => {
@@ -118,6 +129,7 @@ describe("/api/articles endpoint", () => {
 					expect(msg).toBe("Path not found.");
 				});
 		});
+
 		test("Status 404 - Valid ID - Article has no comments (comment_count)", () => {
 			const article_id = 2;
 			return request(app)
@@ -190,6 +202,7 @@ describe("/api/articles endpoint", () => {
 					expect(msg).toBe("Path not found.");
 				});
 		});
+
 	});
 
 	describe("PATCH /api/articles/:article_id", () => {
