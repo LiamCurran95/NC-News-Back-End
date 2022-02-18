@@ -119,6 +119,7 @@ describe("/api/:article_id", () => {
 				.get(`/api/articles/${article_id}`)
 				.expect(200)
 				.then(({ body }) => {
+					console.log(body.article.comment_count);
 					expect(body.article.comment_count).toBe("0");
 				});
 		});
