@@ -68,3 +68,15 @@ exports.updateArticleById = ({ inc_votes }, article_id) => {
 			return rows[0];
 		});
 };
+
+exports.addComment = ({ author, body }, article_id) => {
+	const commentProperties = [author, body, article_id];
+	return db
+		.query(
+			`INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;`,
+			commentProperties
+		)
+		.then(({ rows }) => {
+			return rows[0];
+		});
+};
