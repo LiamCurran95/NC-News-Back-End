@@ -1,6 +1,5 @@
 const {
 	fetchArticlesById,
-	checkArticleExists,
 	fetchArticles,
 	updateArticleById,
 	fetchCommentsByArticleId,

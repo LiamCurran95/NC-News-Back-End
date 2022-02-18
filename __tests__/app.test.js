@@ -102,6 +102,7 @@ describe("/api/articles endpoint", () => {
 				.get(`/api/articles/${article_id}`)
 				.expect(200)
 				.then(({ body }) => {
+					console.log(body.article.comment_count);
 					expect(body.article.comment_count).toBe("0");
 				});
 		});
@@ -127,16 +128,6 @@ describe("/api/articles endpoint", () => {
 				.expect(404)
 				.then(({ body: { msg } }) => {
 					expect(msg).toBe("Path not found.");
-				});
-		});
-
-		test("Status 404 - Valid ID - Article has no comments (comment_count)", () => {
-			const article_id = 2;
-			return request(app)
-				.get(`/api/articles/${article_id}`)
-				.expect(404)
-				.then(({ body: { msg } }) => {
-					expect(msg).toBe("This article has no comments.");
 				});
 		});
 	});
@@ -184,15 +175,6 @@ describe("/api/articles endpoint", () => {
 					]);
 				});
 		});
-		test("Status 200 - Valid ID - Article has no comments (comment_count)", () => {
-			const article_id = 2;
-			return request(app)
-				.get(`/api/articles/${article_id}/comments`)
-				.expect(404)
-				.then(({ body: { msg } }) => {
-					expect(msg).toBe("This article has no comments.");
-				});
-		});
 		test("Status 404 - Invalid ID - path not found", () => {
 			const article_id = 9;
 			return request(app)
@@ -202,7 +184,6 @@ describe("/api/articles endpoint", () => {
 					expect(msg).toBe("Path not found.");
 				});
 		});
-
 	});
 
 	describe("PATCH /api/articles/:article_id", () => {
