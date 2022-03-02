@@ -4,10 +4,23 @@ const app = require("../app");
 const db = require("../db/connection");
 const data = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
+const { readFile } = require("fs/promises");
 
 beforeEach(() => seed(data));
 afterAll(() => {
 	if (db.end) db.end();
+});
+
+describe("GET /api", () => {
+	test("Status 200 - Response is an object containing all available endpoints", () => {
+		return request(app)
+			.get("/api")
+			.expect(200)
+			.then(({ body: { endpoints } }) => {
+				expect(typeof endpoints).toBe("object");
+				expect(endpoints["GET /api"]).not.toBe(undefined);
+			});
+	});
 });
 
 describe("/api/topics endpoint", () => {
@@ -393,7 +406,6 @@ describe("/api/comments endpoint", () => {
 						.get("/api/articles/1/comments")
 						.expect(200)
 						.then(({ body: { article_comments } }) => {
-							console.log(article_comments);
 							expect(article_comments).toHaveLength(10);
 						});
 				});
