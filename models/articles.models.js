@@ -1,18 +1,52 @@
 const db = require("../db/connection");
 
-exports.fetchArticles = () => {
-	return db
-		.query(
-			`SELECT COUNT (comment_id) AS comment_count, articles.author, title, articles.article_id, articles.body, topic, articles.created_at, articles.votes
-    		FROM articles
-			LEFT JOIN comments
-			ON comments.article_id = articles.article_id
-			GROUP BY articles.article_id 
-			ORDER BY created_at DESC;`
-		)
-		.then(({ rows }) => {
-			return rows;
+exports.fetchArticles = (sortBy, order, topic) => {
+	const validSortOptions = [
+		"author",
+		"title",
+		"article_id",
+		"topic",
+		"votes",
+		"comment_count",
+		"date",
+	];
+	if (sortBy && !validSortOptions.includes(sortBy))
+		return Promise.reject({ status: 400, msg: "Invalid sort_by" });
+
+	if (!sortBy || sortBy === "date") sortBy = "created_at";
+
+	if (order && !["asc", "desc"].includes(order))
+		return Promise.reject({
+			status: 400,
+			msg: "Invalid - 'ASC' or 'DESC' only",
 		});
+
+	order = order === "asc" ? "ASC" : "DESC";
+
+	let queryStr = `
+	  SELECT articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.author, COUNT(comments.comment_id)::INT AS comment_count
+	  FROM articles
+	  LEFT JOIN comments ON articles.article_id = comments.article_id `;
+
+	let prepValues = [];
+	if (topic) {
+		queryStr += `WHERE topic LIKE $1 `;
+		prepValues.push(`${topic}`);
+	}
+
+	queryStr += `
+    GROUP BY articles.article_id
+    ORDER BY ${sortBy} ${order}`;
+
+	return db.query(queryStr, prepValues).then(({ rows: articles }) => {
+		if (!articles.length) {
+			return Promise.reject({
+				status: 404,
+				msg: "No articles found with that topic",
+			});
+		}
+		return [articles];
+	});
 };
 
 exports.fetchArticlesById = (id) => {

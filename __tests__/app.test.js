@@ -1,3 +1,4 @@
+//sudo service postgresql start
 const request = require("supertest");
 const app = require("../app");
 const db = require("../db/connection");
@@ -58,12 +59,28 @@ describe("/api/articles endpoint", () => {
 					});
 				});
 		});
-		test("Status 200 - Articles are sorted by date DESC", () => {
+		test("Status 200 - Articles are sorted by date DESC by default", () => {
 			return request(app)
 				.get("/api/articles")
 				.expect(200)
 				.then(({ body: { articles } }) => {
 					expect(articles).toBeSortedBy("created_at", { descending: true });
+				});
+		});
+		test("Status 200 - Articles can be sorted with an order query", () => {
+			return request(app)
+				.get("/api/articles?order=asc")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					expect(articles).toBeSortedBy("created_at", { ascending: true });
+				});
+		});
+		test("Status 200 - Articles can be sorted with an order query, by any column", () => {
+			return request(app)
+				.get("/api/articles?sort_by=title")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					expect(articles).toBeSortedBy("title", { descending: true });
 				});
 		});
 		test("Status 200 - Additional functionality: comment_count", () => {
@@ -74,10 +91,26 @@ describe("/api/articles endpoint", () => {
 					articles.forEach((article) => {
 						expect(article).toEqual(
 							expect.objectContaining({
-								comment_count: expect.any(String),
+								comment_count: expect.any(Number),
 							})
 						);
 					});
+				});
+		});
+		test("Status 400 - Error message for invalid order query", () => {
+			return request(app)
+				.get("/api/articles?order=notgoingtowork")
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Invalid - 'ASC' or 'DESC' only");
+				});
+		});
+		test("Status 400 - Error message for invalid sort query", () => {
+			return request(app)
+				.get("/api/articles?sort_by=notgoingtowork")
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Invalid sort_by");
 				});
 		});
 		test("Status 404 - Path not found", () => {
@@ -319,6 +352,18 @@ describe("/api/articles endpoint", () => {
 						expect(msg).toBe("No matching article.");
 					});
 			});
+		});
+	});
+	describe("GET /api/articles (with queries)", () => {
+		test("Status 200 - User can add sort_by any valid column; defaults to date", () => {
+			return request(app)
+				.get("/api/articles?sort_by=date")
+				.expect(200)
+				.then(({ body: { articles } }) => {
+					expect(articles).toBeSortedBy("created_at", {
+						descending: true,
+					});
+				});
 		});
 	});
 });
