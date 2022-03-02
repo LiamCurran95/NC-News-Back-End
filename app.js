@@ -9,6 +9,7 @@ const {
 const { getTopics } = require("./controllers/news.controllers");
 const errors = require("./controllers/errors");
 const { getUsers } = require("./controllers/users.controllers");
+const { removeCommentById } = require("./controllers/comments.controllers");
 
 const app = express();
 app.use(express.json());
@@ -25,6 +26,9 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 //USERS
 app.get("/api/users", getUsers);
+
+//COMMENTS
+app.delete("/api/comments/:comment_id", removeCommentById);
 
 app.all("/*", (req, res) => {
 	res.status(404).send({ msg: "Path not found." });

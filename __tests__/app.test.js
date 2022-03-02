@@ -354,18 +354,6 @@ describe("/api/articles endpoint", () => {
 			});
 		});
 	});
-	describe("GET /api/articles (with queries)", () => {
-		test("Status 200 - User can add sort_by any valid column; defaults to date", () => {
-			return request(app)
-				.get("/api/articles?sort_by=date")
-				.expect(200)
-				.then(({ body: { articles } }) => {
-					expect(articles).toBeSortedBy("created_at", {
-						descending: true,
-					});
-				});
-		});
-	});
 });
 
 describe("/api/users endpoint", () => {
@@ -389,6 +377,41 @@ describe("/api/users endpoint", () => {
 				.expect(404)
 				.then(({ body: { msg } }) => {
 					expect(msg).toBe("Path not found.");
+				});
+		});
+	});
+});
+
+describe("/api/comments endpoint", () => {
+	describe("DELETE /api/comments/:comment_id", () => {
+		test("Status 204 - Successfully deleted comment and no response.", () => {
+			return request(app)
+				.delete("/api/comments/2")
+				.expect(204)
+				.then(() => {
+					return request(app)
+						.get("/api/articles/1/comments")
+						.expect(200)
+						.then(({ body: { article_comments } }) => {
+							console.log(article_comments);
+							expect(article_comments).toHaveLength(10);
+						});
+				});
+		});
+		test("Status 400 - Unsuccessfully deleted comment as comment ID invalid.", () => {
+			return request(app)
+				.delete("/api/comments/notarealid")
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Bad request.");
+				});
+		});
+		test("Status 404 - Unsuccessfully deleted comment as no comment of that ID.", () => {
+			return request(app)
+				.delete("/api/comments/1234")
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("No comment found for this ID.");
 				});
 		});
 	});
