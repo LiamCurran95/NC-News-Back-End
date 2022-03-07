@@ -113,7 +113,7 @@ describe("/api/articles endpoint", () => {
 		test("Status 400 - Error message for invalid order query", () => {
 			return request(app)
 				.get("/api/articles?order=notgoingtowork")
-				.expect(400)
+				.expect(404)
 				.then(({ body: { msg } }) => {
 					expect(msg).toBe("Invalid - 'ASC' or 'DESC' only");
 				});
