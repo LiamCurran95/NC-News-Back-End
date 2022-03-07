@@ -1,5 +1,10 @@
 const express = require("express");
+const cors = require("cors");
+const app = new express();
+app.use(cors());
+app.use(express.json());
 const { readFile } = require("fs/promises");
+
 const {
 	getArticles,
 	getArticlesById,
@@ -11,12 +16,6 @@ const { getTopics } = require("./controllers/news.controllers");
 const errors = require("./controllers/errors");
 const { getUsers } = require("./controllers/users.controllers");
 const { removeCommentById } = require("./controllers/comments.controllers");
-const cors = require("cors");
-
-app.use(cors());
-
-const app = express();
-app.use(express.json());
 
 //API
 app.get("/api", (req, res, next) => {
