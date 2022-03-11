@@ -8,20 +8,20 @@ exports.fetchArticles = (sortBy, order, topic) => {
 		"topic",
 		"votes",
 		"comment_count",
-		"date",
+		"created_at",
 	];
 	if (sortBy && !validSortOptions.includes(sortBy))
 		return Promise.reject({ status: 400, msg: "Invalid sort_by" });
 
-	if (!sortBy || sortBy === "date") sortBy = "created_at";
+	if (!sortBy || sortBy === "created_at") sortBy = "created_at";
 
 	if (order && !["asc", "desc"].includes(order))
 		return Promise.reject({
 			status: 400,
-			msg: "Invalid - 'ASC' or 'DESC' only",
+			msg: "Invalid - 'asc' or 'desc' only",
 		});
 
-	order = order === "asc" ? "ASC" : "DESC";
+	order = order === "asc" ? "asc" : "desc";
 
 	let queryStr = `
 	  SELECT articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, articles.author, COUNT(comments.comment_id)::INT AS comment_count

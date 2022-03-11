@@ -72,7 +72,7 @@ describe("/api/articles endpoint", () => {
 					});
 				});
 		});
-		test("Status 200 - Articles are sorted by date DESC by default", () => {
+		test("Status 200 - Articles are sorted by date desc by default", () => {
 			return request(app)
 				.get("/api/articles")
 				.expect(200)
@@ -115,7 +115,7 @@ describe("/api/articles endpoint", () => {
 				.get("/api/articles?order=notgoingtowork")
 				.expect(400)
 				.then(({ body: { msg } }) => {
-					expect(msg).toBe("Invalid - 'ASC' or 'DESC' only");
+					expect(msg).toBe("Invalid - 'asc' or 'desc' only");
 				});
 		});
 		test("Status 400 - Error message for invalid sort query", () => {
@@ -311,6 +311,7 @@ describe("/api/articles endpoint", () => {
 					.send(comment, articleID)
 					.expect(201)
 					.then(({ body }) => {
+						console.log(body);
 						expect(body).toEqual(
 							expect.objectContaining({
 								comment: {
