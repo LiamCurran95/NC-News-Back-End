@@ -13,7 +13,7 @@ const {
 	postComment,
 } = require("./controllers/articles.controllers");
 const { getTopics } = require("./controllers/news.controllers");
-const errors = require("./controllers/errors");
+const errors = require("./error-handlers/errors");
 const { getUsers } = require("./controllers/users.controllers");
 const { removeCommentById } = require("./controllers/comments.controllers");
 
