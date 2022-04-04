@@ -30,7 +30,7 @@ Any versions of the above tools that pre-date those listed have not been tested 
 
 ## Cloning
 
-Clone this repository via "git clone https://github.com/LiamCurran95/nc-news-BE"
+Clone this repository via `git clone https://github.com/LiamCurran95/nc-news-BE`
 
 Install dependencies via "npm install"
 
@@ -50,11 +50,11 @@ Run the two following commands:
 ## Testing
 
 This API has been tested with Jest, to initialise the tests run the following command:
-"npm test"
+`npm test`
 
 ## Using the API
 
 To run a local version of this app run the following command:
-"npm run start"
+`npm run start`
 
 This will open up a local port (9090, defined in the listen.js file) - requests can be made via apps such as Insomnia.
