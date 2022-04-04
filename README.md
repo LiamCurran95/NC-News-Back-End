@@ -10,14 +10,14 @@ This project is a demonstration of a RESTful API written in JavaScript and using
 
 A user is able to interact with news data with the following methods:
 
-*GET a list of all of the available endpoints
-*GET a list of topics covered by the articles
-*GET a list of user that have posted comments to the articles
-*GET a list of articles with the ability to filter by topic, sort by various valid fields, decide upon the sort order and customise the pagination limits and view specific pages
-*GET a specific article
-*PATCH a specific article in order to vote on it
-*POST a new comment to a specific article
-*DELETE a specific comment
+* GET a list of all of the available endpoints
+* GET a list of topics covered by the articles
+* GET a list of user that have posted comments to the articles
+* GET a list of articles with the ability to filter by topic, sort by various valid fields, decide upon the sort order and customise the pagination limits and view specific pages
+* GET a specific article
+* PATCH a specific article in order to vote on it
+* POST a new comment to a specific article
+* DELETE a specific comment
 
 ### Setup Locally
 
@@ -30,7 +30,7 @@ Any versions of the above tools that pre-date those listed have not been tested 
 
 ## Cloning
 
-Clone this repository via "git clone https://github.com/LiamCurran95/nc-news-BE"
+Clone this repository via `git clone https://github.com/LiamCurran95/nc-news-BE`
 
 Install dependencies via "npm install"
 
@@ -50,11 +50,11 @@ Run the two following commands:
 ## Testing
 
 This API has been tested with Jest, to initialise the tests run the following command:
-"npm test"
+`npm test`
 
 ## Using the API
 
 To run a local version of this app run the following command:
-"npm run start"
+`npm run start`
 
 This will open up a local port (9090, defined in the listen.js file) - requests can be made via apps such as Insomnia.
