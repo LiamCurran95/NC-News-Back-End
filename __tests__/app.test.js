@@ -454,4 +454,37 @@ describe("/api/comments endpoint", () => {
 				});
 		});
 	});
+	describe("PATCH /api/comments/:comment_id", () => {
+		test("Status 200 - Return body contains article object with updated vote count", () => {
+			const body = { inc_votes: 5 };
+			return request(app)
+				.patch("/api/comments/1")
+				.send(body)
+				.expect(200)
+				.then(({ body: { comment } }) => {
+					expect(comment.votes).toBe(21);
+					expect(comment.body).toBe(
+						"Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!"
+					);
+				});
+		});
+		test("Status 400 - Return body contains error if request doesn't contain votes.", () => {
+			return request(app)
+				.patch("/api/comments/1")
+				.send({})
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Bad request.");
+				});
+		});
+		test("Status 404 - Return body contains error if requested comment doesn't exist.", () => {
+			const body = { inc_votes: 5 };
+			return request(app)
+				.patch("/api/comments/1241")
+				.send(body)
+				.then(({ body: { msg } }) => {
+					expect(msg).toBe("Comment not found.");
+				});
+		});
+	});
 });

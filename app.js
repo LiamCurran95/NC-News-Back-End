@@ -18,7 +18,10 @@ const {
 	getUsers,
 	getUserByUsername,
 } = require("./controllers/users.controllers");
-const { removeCommentById } = require("./controllers/comments.controllers");
+const {
+	removeCommentById,
+	patchCommentVote,
+} = require("./controllers/comments.controllers");
 
 //API
 app.get("/api", (req, res, next) => {
@@ -44,6 +47,7 @@ app.get("/api/users/:username", getUserByUsername);
 
 //COMMENTS
 app.delete("/api/comments/:comment_id", removeCommentById);
+app.patch("/api/comments/:comment_id", patchCommentVote);
 
 app.all("/*", (req, res) => {
 	res.status(404).send({ msg: "Path not found." });
