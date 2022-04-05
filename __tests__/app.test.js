@@ -311,7 +311,6 @@ describe("/api/articles endpoint", () => {
 					.send(comment, articleID)
 					.expect(201)
 					.then(({ body }) => {
-						console.log(body);
 						expect(body).toEqual(
 							expect.objectContaining({
 								comment: {
@@ -349,7 +348,7 @@ describe("/api/articles endpoint", () => {
 					.send(comment, articleID)
 					.expect(400)
 					.then(({ body: { msg } }) => {
-						expect(msg).toBe("Further information required in body.");
+						expect(msg).toBe("This username does not exist");
 					});
 			});
 			test("Status 404 - Article does not exist for a comment to be posted to", () => {
@@ -391,6 +390,33 @@ describe("/api/users endpoint", () => {
 				.expect(404)
 				.then(({ body: { msg } }) => {
 					expect(msg).toBe("Path not found.");
+				});
+		});
+	});
+	describe.only("Get user by username", () => {
+		test("Status 200 - Body contains an object containing the specific user requested", () => {
+			const user = "icellusedkars";
+			return request(app)
+				.get(`/api/users/${user}`)
+				.expect(200)
+				.then((res) => {
+					expect(res._body).toEqual({
+						user: {
+							username: "icellusedkars",
+							name: "sam",
+							avatar_url:
+								"https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+						},
+					});
+				});
+		});
+		test("Status 404 - Body returned contains an error for a user not found", () => {
+			const user = "notarealuser";
+			return request(app)
+				.get(`/api/users/${user}`)
+				.expect(404)
+				.then(({ body: { msg } }) => {
+					expect(msg).toEqual("This username does not exist");
 				});
 		});
 	});

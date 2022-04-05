@@ -14,7 +14,10 @@ const {
 } = require("./controllers/articles.controllers");
 const { getTopics } = require("./controllers/news.controllers");
 const errors = require("./error-handlers/errors");
-const { getUsers } = require("./controllers/users.controllers");
+const {
+	getUsers,
+	getUserByUsername,
+} = require("./controllers/users.controllers");
 const { removeCommentById } = require("./controllers/comments.controllers");
 
 //API
@@ -37,6 +40,7 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 //USERS
 app.get("/api/users", getUsers);
+app.get("/api/users/:username", getUserByUsername);
 
 //COMMENTS
 app.delete("/api/comments/:comment_id", removeCommentById);

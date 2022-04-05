@@ -20,5 +20,6 @@ exports.customErrorHandler = (err, req, res, next) => {
 };
 
 exports.error500Handler = (err, req, res, next) => {
+	console.log(err);
 	res.status(500).send({ msg: "There is an error on the server" });
 };
