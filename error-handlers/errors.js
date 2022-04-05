@@ -4,7 +4,7 @@ exports.psqlErrorHandler = (err, req, res, next) => {
 	} else if (err.code === "23502") {
 		res.status(400).send({ msg: "Further information required in body." });
 	} else if (err.code === "23503") {
-		res.status(400).send({ msg: "No matching article." });
+		res.status(400).send({ msg: "Bad request." });
 	} else {
 		next(err);
 	}

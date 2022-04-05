@@ -135,6 +135,68 @@ describe("/api/articles endpoint", () => {
 				});
 		});
 	});
+	describe("POST /api/articles", () => {
+		test("Status 201 - Return contains an object with article object ", () => {
+			const article = {
+				author: "icellusedkars",
+				title: "Larry's article",
+				body: "Larry was a little lamb",
+				topic: "mitch",
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(article)
+				.expect(201)
+				.then(({ body: { article } }) => {
+					expect(article).toEqual(
+						expect.objectContaining({
+							article_id: 13,
+							title: "Larry's article",
+							topic: "mitch",
+							author: "icellusedkars",
+							body: "Larry was a little lamb",
+							created_at: expect.any(String),
+							votes: 0,
+						})
+					);
+				})
+				.then(() => {
+					return request(app)
+						.get("/api/articles")
+						.expect(200)
+						.then(({ body: { articles } }) => {
+							expect(articles.length).toBe(13);
+						});
+				});
+		});
+		test("Status 400 - Return contains an error as user does not exist", () => {
+			const article = {
+				author: "larry",
+				title: "Larry's article",
+				body: "Larry was a little lamb",
+				topic: "mitch",
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(article)
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toEqual("Bad request.");
+				});
+		});
+		test("Status 400 - Return contains an error as required field is missing", () => {
+			const article = {
+				author: "larry",
+			};
+			return request(app)
+				.post("/api/articles")
+				.send(article)
+				.expect(400)
+				.then(({ body: { msg } }) => {
+					expect(msg).toEqual("Further information required in body.");
+				});
+		});
+	});
 	describe("/api/articles/:article_id", () => {
 		describe("GET /api/articles/:article_id", () => {
 			test("Status 200 - Body contains an object with the relevant article", () => {
@@ -351,7 +413,7 @@ describe("/api/articles endpoint", () => {
 						expect(msg).toBe("Further information required in body.");
 					});
 			});
-			test("Status 404 - Article does not exist for a comment to be posted to", () => {
+			test("Status 400 - Article does not exist for a comment to be posted to", () => {
 				const comment = {
 					author: "butter_bridge",
 					body: "Wow,what a great comment!",
@@ -362,7 +424,7 @@ describe("/api/articles endpoint", () => {
 					.send(comment, articleID)
 					.expect(400)
 					.then(({ body: { msg } }) => {
-						expect(msg).toBe("No matching article.");
+						expect(msg).toBe("Bad request.");
 					});
 			});
 		});

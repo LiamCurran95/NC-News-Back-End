@@ -114,3 +114,20 @@ exports.addComment = ({ author, body }, article_id) => {
 			return rows[0];
 		});
 };
+
+exports.addArticle = ({ author, title, body, topic }) => {
+	const articleProperties = [author, title, body, topic];
+	return db
+		.query(
+			`INSERT INTO articles (author, title, body, topic) VALUES ($1, $2, $3, $4) RETURNING *;`,
+			articleProperties
+		)
+		.then(({ rows }) => {
+			if (rows.length === 0)
+				return Promise.reject({
+					status: 404,
+					msg: "Path not found.",
+				});
+			return rows[0];
+		});
+};
