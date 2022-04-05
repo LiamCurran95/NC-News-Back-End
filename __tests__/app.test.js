@@ -348,7 +348,7 @@ describe("/api/articles endpoint", () => {
 					.send(comment, articleID)
 					.expect(400)
 					.then(({ body: { msg } }) => {
-						expect(msg).toBe("This username does not exist");
+						expect(msg).toBe("Further information required in body.");
 					});
 			});
 			test("Status 404 - Article does not exist for a comment to be posted to", () => {
@@ -393,7 +393,7 @@ describe("/api/users endpoint", () => {
 				});
 		});
 	});
-	describe.only("Get user by username", () => {
+	describe("Get user by username", () => {
 		test("Status 200 - Body contains an object containing the specific user requested", () => {
 			const user = "icellusedkars";
 			return request(app)
