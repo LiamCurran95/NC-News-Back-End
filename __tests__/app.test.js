@@ -157,6 +157,7 @@ describe("/api/articles endpoint", () => {
 							body: "Larry was a little lamb",
 							created_at: expect.any(String),
 							votes: 0,
+							comment_count: 0,
 						})
 					);
 				})
