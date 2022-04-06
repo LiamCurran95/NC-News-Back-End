@@ -33,7 +33,7 @@ There are three endpoints that a user is able to interact with
 * https://vested-2022.herokuapp.com/API/users
 * https://vested-2022.herokuapp.com/API/esg
 
-
+The following endpoint methods are available:
 * GET an array of all polygon data
 * GET an array of all user data
 * GET an array of all ESG data
